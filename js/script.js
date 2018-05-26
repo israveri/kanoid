@@ -10,6 +10,11 @@ let ball = {
   ySpeed: 7.5
 }
 
+let paddle = {
+  width: 100,
+  height: 15
+}
+
 window.onload = function() {
   canvas = document.getElementById('canvas')
   canvas.width = CANVAS_WIDTH
@@ -30,23 +35,27 @@ function move() {
   ball.x += ball.xSpeed
   ball.y += ball.ySpeed
   
-  if (ball.x > canvas.width) {
+  if (ball.x > canvas.width || ball.x < 0) {
     ball.xSpeed *= -1
   }
-  if (ball.y > canvas.height) {
-    ball.ySpeed *= -1
-  }
-  if (ball.x < 0) {
-    ball.xSpeed *= -1
-  }
-  if (ball.y < 0) {
+  if (ball.y > canvas.height || ball.y < 0) {
     ball.ySpeed *= -1
   }
 }
 
 function draw() {
+  // Canvas space
   rectangle(0, 0, canvas.width, canvas.height, 'black')
+  
+  // Ball
   circle(ball.x, ball.y, 10, 'red')
+
+  // Paddle
+  rectangle(canvas.width / 2 - (paddle.width / 2),
+            canvas.height - 50,
+            paddle.width,
+            paddle.height,
+            'blue')
 }
 
 function rectangle(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
