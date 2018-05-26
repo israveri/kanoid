@@ -59,13 +59,21 @@ function loop() {
   draw()
 }
 
+function resetBall() {
+  ball.x = INITIAL_BALL_X
+  ball.y = INITIAL_BALL_Y
+
+  if (ball.ySpeed > 0) { ball.ySpeed *= -1 }
+}
+
 function move() {
   ball.x += ball.xSpeed
   ball.y += ball.ySpeed
   
   // ball-boundary collision detection
   if (ball.x > canvas.width || ball.x < 0) { ball.xSpeed *= -1 }
-  if (ball.y > canvas.height || ball.y < 0) { ball.ySpeed *= -1 }
+  if (ball.y < 0) { ball.ySpeed *= -1 }
+  if (ball.y > canvas.height) { resetBall() }
 
   // ball-paddle collision detection
   if (ball.y > paddle.y) { ball.ySpeed *= -1 }
