@@ -1,6 +1,10 @@
 const CANVAS_WIDTH = 1000
 const CANVAS_HEIGHT = 600
 
+const PADDLE_WIDTH = 100
+const PADDLE_HEIGHT = 15
+const PADDLE_GUTTER = 30
+
 let canvas, context
 
 let ball = {
@@ -11,10 +15,22 @@ let ball = {
 }
 
 let paddle = {
-  width: 100,
-  height: 15
+  width: PADDLE_WIDTH,
+  height: PADDLE_HEIGHT,
+  x: (CANVAS_WIDTH / 2) - (PADDLE_WIDTH / 2),
+  y: CANVAS_HEIGHT - PADDLE_HEIGHT - PADDLE_GUTTER
 }
 
+function updatePaddlePosition(event) {
+  let boundaries = canvas.getBoundingClientRect()
+  let root = document.documentElement
+  
+  let pointerX = event.clientX - boundaries.left - root.scrollLeft
+
+  paddle.x = pointerX
+}
+
+// Game setup
 window.onload = function() {
   canvas = document.getElementById('canvas')
   canvas.width = CANVAS_WIDTH
@@ -24,8 +40,11 @@ window.onload = function() {
 
   let fps = 30
   setInterval(loop, 1000 / fps)
+
+  canvas.addEventListener('mousemove', updatePaddlePosition)
 }
 
+// Game loop
 function loop() {
   move()
   draw()
@@ -51,8 +70,8 @@ function draw() {
   circle(ball.x, ball.y, 10, 'red')
 
   // Paddle
-  rectangle(canvas.width / 2 - (paddle.width / 2),
-            canvas.height - 50,
+  rectangle(paddle.x - paddle.width / 2,
+            canvas.height - PADDLE_GUTTER,
             paddle.width,
             paddle.height,
             'blue')
