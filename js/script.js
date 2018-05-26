@@ -3,6 +3,13 @@ const CANVAS_HEIGHT = 600
 
 let canvas, context
 
+let ball = {
+  x: 70,
+  y: 70,
+  xSpeed: 10,
+  ySpeed: 7.5
+}
+
 window.onload = function() {
   canvas = document.getElementById('canvas')
   canvas.width = CANVAS_WIDTH
@@ -10,9 +17,36 @@ window.onload = function() {
 
   context = canvas.getContext('2d')
 
-  rectangle(0, 0, canvas.width, canvas.height, 'black')
+  let fps = 30
+  setInterval(loop, 1000 / fps)
+}
 
-  circle(100, 100, 10, 'red')
+function loop() {
+  move()
+  draw()
+}
+
+function move() {
+  ball.x += ball.xSpeed
+  ball.y += ball.ySpeed
+  
+  if (ball.x > canvas.width) {
+    ball.xSpeed *= -1
+  }
+  if (ball.y > canvas.height) {
+    ball.ySpeed *= -1
+  }
+  if (ball.x < 0) {
+    ball.xSpeed *= -1
+  }
+  if (ball.y < 0) {
+    ball.ySpeed *= -1
+  }
+}
+
+function draw() {
+  rectangle(0, 0, canvas.width, canvas.height, 'black')
+  circle(ball.x, ball.y, 10, 'red')
 }
 
 function rectangle(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
