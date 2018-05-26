@@ -2,16 +2,21 @@ const CANVAS_WIDTH = 1000
 const CANVAS_HEIGHT = 600
 
 const PADDLE_WIDTH = 100
-const PADDLE_HEIGHT = 15
+const PADDLE_HEIGHT = 10
 const PADDLE_GUTTER = 30
+
+const BALL_RADIUS = 10
+const INITIAL_BALL_X = (CANVAS_WIDTH / 2) - (PADDLE_WIDTH / 2)
+const INITIAL_BALL_Y = CANVAS_HEIGHT - PADDLE_HEIGHT - PADDLE_GUTTER
 
 let canvas, context
 
 let ball = {
-  x: 70,
-  y: 70,
+  x: INITIAL_BALL_X,
+  y: INITIAL_BALL_Y,
+  radius: BALL_RADIUS,
   xSpeed: 10,
-  ySpeed: 7.5
+  ySpeed: -7.5
 }
 
 let paddle = {
@@ -22,11 +27,15 @@ let paddle = {
 }
 
 function updatePaddlePosition(event) {
+  // Js trickery to get environment data
   let boundaries = canvas.getBoundingClientRect()
   let root = document.documentElement
   
+  // Consider canva's boundaries and page scroll
+  // position to calculate mouse coordinates
   let pointerX = event.clientX - boundaries.left - root.scrollLeft
 
+  // Apply mouse coordinates to paddle position
   paddle.x = pointerX
 }
 
@@ -44,7 +53,7 @@ window.onload = function() {
   canvas.addEventListener('mousemove', updatePaddlePosition)
 }
 
-// Game loop
+// Main game loop
 function loop() {
   move()
   draw()
@@ -54,20 +63,20 @@ function move() {
   ball.x += ball.xSpeed
   ball.y += ball.ySpeed
   
-  if (ball.x > canvas.width || ball.x < 0) {
-    ball.xSpeed *= -1
-  }
-  if (ball.y > canvas.height || ball.y < 0) {
-    ball.ySpeed *= -1
-  }
+  // ball-boundary collision detection
+  if (ball.x > canvas.width || ball.x < 0) { ball.xSpeed *= -1 }
+  if (ball.y > canvas.height || ball.y < 0) { ball.ySpeed *= -1 }
+
+  // ball-paddle collision detection
+  if (ball.y > paddle.y) { ball.ySpeed *= -1 }
 }
 
 function draw() {
-  // Canvas space
+  // Canvas boundary
   rectangle(0, 0, canvas.width, canvas.height, 'black')
   
   // Ball
-  circle(ball.x, ball.y, 10, 'red')
+  circle(ball.x, ball.y, ball.radius, 'red')
 
   // Paddle
   rectangle(paddle.x - paddle.width / 2,
